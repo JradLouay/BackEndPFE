@@ -5,8 +5,20 @@ import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
 export Client, { schema } from './model'
 
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination : function (req, file, cb) {
+      cb(null, './images/');
+    },
+    filename:function (req, file, cb) {
+      cb(null, file.originalname);
+    }
+});
+const upload = multer({storage: storage});
+
+
 const router = new Router()
-const { clientName, host, port, userName, password, image, file, version, status, lastUpdate, deployedModules, variables, schedulers } = schema.tree
+const { clientName, host, port, userName, password, image , file, version, status, lastUpdate, deployedModules, variables, schedulers } = schema.tree
 
 /**
  * @api {post} /clients Create client
@@ -30,7 +42,8 @@ const { clientName, host, port, userName, password, image, file, version, status
  * @apiError 404 Client not found.
  */
 router.post('/',
-  body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate, deployedModules, variables, schedulers }),
+  upload.single('image'),
+  // body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate, deployedModules, variables, schedulers }),
   create)
 
 /**

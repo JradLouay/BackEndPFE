@@ -1,16 +1,18 @@
 import { success, notFound } from '../../services/response/'
-import { Client } from '.'
+import { Client } from './index'
 
-// export const create = ({ bodymen: { body } }, res, next) =>
+
 export const create = (req, res, next) =>
     {
-      // Client.create(body)
-      // .then((client) => client.view(true))
-      // .then(success(res, 201))
-      // .catch(next)
-      console.log(req.bodymen.body);
-      
-      
+      const body = {
+        ...req.body,
+        image : req.file.path
+      }
+      Client.create(body)
+      .then((client) => client.view(true))
+      .then(success(res, 201))
+      .catch(next)
+     
     }
     
 
