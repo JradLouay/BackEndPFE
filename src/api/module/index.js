@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { create, index, show, update, destroy, addToClient, removeFromClient } from './controller'
+import { create, index, show, update, destroy, addToClient, removeFromClient, undeployedModules } from './controller'
 import { schema } from './model'
 export Module, { schema } from './model'
 
@@ -47,6 +47,17 @@ router.post('/:clientId/:moduleId',
 router.get('/',
   query(),
   index)
+/**
+ * @api {get} /modules/clientId Retrieve filtredModules
+ * @apiName RetrieveFiltredModules
+ * @apiGroup Module
+ * @apiUse listParams
+ * @apiSuccess {Object[]} modules List of modules.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ */
+router.get('/:clientId',
+  query(),
+  undeployedModules)
 
 /**
  * @api {get} /modules/:id Retrieve module

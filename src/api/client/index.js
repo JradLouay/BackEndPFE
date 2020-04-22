@@ -5,13 +5,26 @@ import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
 export Client, { schema } from './model'
 
+// const mkdirp = require('mkdirp');
 const multer = require('multer');
+const fs = require('fs');
+
 const storage = multer.diskStorage({
     destination : function (req, file, cb) {
-      cb(null, './images/');
+      if (file.fieldname === "image") {
+        cb(null, './image/');
+        
+      } else {
+        cb(null, './file/');      
+      }
     },
     filename:function (req, file, cb) {
-      cb(null, file.originalname);
+      if (file.fieldname === "file") {
+        cb(null, req.body.clientName);
+      } else {
+        cb(null, file.originalname);
+      }
+      
     }
 });
 const upload = multer({storage: storage});
@@ -42,7 +55,7 @@ const { clientName, host, port, userName, password, image , file, version, statu
  * @apiError 404 Client not found.
  */
 router.post('/',
-  upload.single('image'),
+  upload.fields([{name: 'image'},{name: 'file'}]),
   // body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate, deployedModules, variables, schedulers }),
   create)
 
@@ -91,7 +104,8 @@ router.get('/:id',
  * @apiError 404 Client not found.
  */
 router.put('/:id',
-  body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate, deployedModules, variables, schedulers }),
+  upload.fields([{name: 'image'},{name: 'file'}]),
+  // body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate, deployedModules, variables, schedulers }),
   update)
 
 /**

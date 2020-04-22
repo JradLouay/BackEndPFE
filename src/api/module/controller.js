@@ -46,6 +46,18 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) =>
     .then(success(res))
     .catch(next)
 
+export const undeployedModules = ({ querymen: { query, select, cursor }, params }, res, next) =>
+    Module.find(query, select, cursor)
+    .then((modules) => {
+      Client.findById(params.clientId)
+      .then((client)=>{  
+         return modules.filter(({id})=>  !client.deployedModules.includes(id)).map((module) => module.view());
+      })
+      .then(success(res))
+      .catch(next)
+    })
+    .catch(next)
+
 export const show = ({ params }, res, next) =>
   Module.findById(params.id)
     .then(notFound(res))
@@ -62,7 +74,7 @@ export const update = ({ bodymen: { body }, params }, res, next) =>
     .catch(next)
 
 export const destroy = ({ params }, res, next) =>
-  Module.findById(params.id)
+    Module.findById(params.id)
     .then(notFound(res))
     .then((module) => module ? module.remove() : null)
     .then(success(res, 204))
