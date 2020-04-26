@@ -6,6 +6,7 @@ export const create = ({ bodymen: { body }, params }, res, next) =>
 {
     const variable = new Variable(body);
     Client.findById(params.clientId)
+    .populate('variables')
     .then(notFound(res))
     .then((client) => {
       if (client) {
@@ -33,12 +34,13 @@ export const show = ({ params }, res, next) =>
     .catch(next)
 
 export const update = ({ bodymen: { body }, params }, res, next) =>
-  Variable.findById(params.id)
+    Variable.findById(params.id)
     .then(notFound(res))
     .then((variable) => variable ? Object.assign(variable, body).save() : null)
     .then((variable) => variable ? variable.view(true) : null)
     .then(success(res))
     .catch(next)
+    
 
 export const destroy = ({ params }, res, next) =>
         Client.findById(params.clientId)

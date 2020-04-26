@@ -16,7 +16,8 @@ export default (apiRoot, routes) => {
     app.use(compression())
     app.use(morgan('dev'))
   }
-  app.use('/images', express.static('images'))  // target only requests coming at /images
+  app.use('/image', express.static('image'))  // target only requests coming at /image
+  app.use('/file', express.static('file'))  // target only requests coming at /file
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(bodyParser.json())
   app.use(apiRoot, routes)

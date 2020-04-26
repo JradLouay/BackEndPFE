@@ -27,6 +27,7 @@ export const addToClient = ({ bodymen: { body }, params }, res, next) =>
 export const removeFromClient = ({ params }, res, next) =>
       {
         Client.findById(params.clientId)
+        .populate('deployedModules')
         .then(notFound(res))
         .then((client) => {
           if (client) {
