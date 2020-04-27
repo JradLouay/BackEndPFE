@@ -5,6 +5,7 @@ import { Client } from '../client'
 export const create = ({ bodymen: { body }, params }, res, next) =>{
   const scheduler = new Scheduler(body) ;
   Client.findById(params.clientId)
+  .populate('schedulers')
   .then(notFound(res))
   .then((client) => {
     if (client) {

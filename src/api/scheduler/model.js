@@ -8,10 +8,10 @@ const schedulerSchema = new Schema({
     type: String
   },
   date: {
-    type: String
+    type: Date
   },
   time: {
-    type: String
+    type: Date
   },
   version: {
     type: String

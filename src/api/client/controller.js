@@ -1,7 +1,6 @@
 import { success, notFound } from '../../services/response/'
 import { Client } from './index'
 
-// const fs = require('fs');
 
 
 export const create = (req, res, next) =>
@@ -51,6 +50,7 @@ export const update = (req, res, next) =>{
       }
       if (req.files.image) {
         body.image = req.files.image[0].path
+        // delete old img
       }
       if (req.files.file) {
         body.file = req.files.file[0].path
