@@ -13,7 +13,7 @@ export const create = ({ bodymen: { body }, params }, res, next) =>
         client.variables.push(variable); 
         variable.save();
         return client.save();
-      } else null 
+      } else return null 
     })
     .then((client) => client ? client.view(true) : null)
     .then(success(res, 201))
@@ -50,7 +50,7 @@ export const destroy = ({ params }, res, next) =>
             client.variables.remove(params.variableId);
             Variable.deleteOne({ _id: params.variableId }, function (err) {});
             return client.save();
-          } else null 
+          } else return null 
         })
         .then((client) => client ? client.view(true) : null)
         .then(success(res, 201))

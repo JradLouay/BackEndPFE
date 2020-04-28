@@ -17,9 +17,6 @@ export const create = (req, res, next) =>
 
       Client.create(body)
       .then((client) => client.view(true))
-      // .then((client) => {
-      //   [client.view(true), client.view(true)]
-      // })
       .then(success(res, 201))
       .catch(next)
     }
@@ -27,9 +24,6 @@ export const create = (req, res, next) =>
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
     Client.find(query, select, cursor)
-    // .populate('variables')
-    // .populate('schedulers')
-    // .populate('deployedModules')
     .then((clients) => clients.map((client) => client.view()))
     .then(success(res))
     .catch(next)
@@ -70,7 +64,7 @@ export const destroy = ({ params }, res, next) =>
       if(client){
         // remove the files 
       return client.remove()
-      }else null
+      }else return null
     })
     .then(success(res, 204))
     .catch(next)

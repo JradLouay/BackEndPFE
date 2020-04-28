@@ -33,7 +33,7 @@ export const removeFromClient = ({ params }, res, next) =>
           if (client) {
             client.deployedModules.remove(params.moduleId);
             return client.save();
-          } else null 
+          } else return null 
         })
         .then((client) => client ? client.view(true) : null)
         .then(success(res, 201))
