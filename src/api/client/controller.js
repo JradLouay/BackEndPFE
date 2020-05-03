@@ -1,7 +1,9 @@
 import { success, notFound } from '../../services/response/'
 import { Client } from './index'
+import { Scheduler } from '../scheduler'
+import { Variable } from '../variable'
 
-
+let fs = require('fs');
 
 export const create = (req, res, next) =>
     {
@@ -44,14 +46,34 @@ export const update = (req, res, next) =>{
       }
       if (req.files.image) {
         body.image = req.files.image[0].path
-        // delete old img
+        // delete old img if name didn't change it will work 
       }
       if (req.files.file) {
-        body.file = req.files.file[0].path
+        body.file = req.files.file[0].path;
       }
+      
     Client.findById(req.params.id)
     .then(notFound(res))
-    .then((client) => client ? Object.assign(client, body).save() : null)
+    .then((client) =>{
+      if (client) {
+
+        if(client.file){
+          fs.unlink(client.file, (err)=>{
+          // if (err) throw err;
+          console.log(client.file,' was deleted');
+          });
+        }
+        if(client.image){
+          fs.unlink(client.image, (err)=>{
+          // if (err) throw err;
+          console.log(client.image,' was deleted');
+          });
+        }
+
+        return Object.assign(client, body).save()
+        
+      } else return null
+    })
     .then((client) => client ? client.view(true) : null)
     .then(success(res))
     .catch(next)
@@ -63,6 +85,30 @@ export const destroy = ({ params }, res, next) =>
     .then((client) => {
       if(client){
         // remove the files 
+        if(client.file){
+          fs.unlink(client.file, (err)=>{
+          // if (err) throw err;
+          console.log(client.file,' was deleted');
+          });
+       }
+        if(client.image){
+          fs.unlink(client.image, (err)=>{
+          // if (err) throw err;
+          console.log(client.image,' was deleted');
+          });
+       }
+       //delete variables delete schedulers  
+      if(client.schedulers){
+        client.schedulers.forEach(id => {
+        Scheduler.deleteOne({ _id: id }, function (err) {});
+       });
+      }
+      if(client.variables){
+         client.variables.forEach(id => {
+        Variable.deleteOne({ _id: id }, function (err) {});
+       });
+      }
+
       return client.remove()
       }else return null
     })

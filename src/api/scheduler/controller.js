@@ -1,8 +1,8 @@
 import { success, notFound } from '../../services/response/'
 import { Scheduler } from '.'
 import { Client } from '../client'
-var schedule = require('node-schedule');
 
+var schedule = require('node-schedule');
 
 export const create = ({ bodymen: { body }, params }, res, next) =>{
   const scheduler = new Scheduler(body);

@@ -52,7 +52,7 @@ export const undeployedModules = ({ querymen: { query, select, cursor }, params 
     .then((modules) => {
       Client.findById(params.clientId)
       .then((client)=>{  
-         return modules.filter(({id})=>  !client.deployedModules.includes(id)).map((module) => module.view());
+         return modules.filter(({id})=> !client.deployedModules.includes(id)).map((module) => module.view());
       })
       .then(success(res))
       .catch(next)

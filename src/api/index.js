@@ -3,6 +3,8 @@ import module from './module'
 import scheduler from './scheduler'
 import variable from './variable'
 import client from './client'
+import user from './user'
+import auth from './auth'
 
 const router = new Router()
 
@@ -10,6 +12,8 @@ router.use('/modules', module)
 router.use('/schedulers', scheduler)
 router.use('/variables', variable)
 router.use('/clients', client)
+router.use('/users', user)
+router.use('/auth', auth)
 
 /**
  * @apiDefine master Master access only
