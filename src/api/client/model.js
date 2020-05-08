@@ -19,6 +19,9 @@ const clientSchema = new Schema({
   image: {
     type: String
   },
+  fileName: {
+    type: String
+  },
   file: {
     type: String
   },
@@ -59,6 +62,7 @@ clientSchema.methods = {
       userName: this.userName,
       password: this.password,
       image: this.image,
+      fileName: this.fileName,
       file: this.file,
       version: this.version,
       status: this.status,

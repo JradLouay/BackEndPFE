@@ -5,6 +5,7 @@ import variable from './variable'
 import client from './client'
 import user from './user'
 import auth from './auth'
+import deploy from './deploy'
 
 const router = new Router()
 
@@ -14,6 +15,7 @@ router.use('/variables', variable)
 router.use('/clients', client)
 router.use('/users', user)
 router.use('/auth', auth)
+router.use('/deploys', deploy)
 
 /**
  * @apiDefine master Master access only

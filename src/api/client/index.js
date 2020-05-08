@@ -5,37 +5,32 @@ import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
 export Client, { schema } from './model'
 
-// const mkdirp = require('mkdirp');
-
 const multer = require('multer');
-const fs = require('fs');
-
+// order is important files must stay at the end of form-data
 const storage = multer.diskStorage({
     destination : function (req, file, cb) {
       if (file.fieldname === "image") {
         cb(null, './image/');
-        
       } else {
-        cb(null, './file/');      
+        cb(null, './file/'); 
       }
     },
     filename:function (req, file, cb) {
-      if (file.fieldname === "file") {
-        cb(null, req.body.clientName);
+      if (file.fieldname === "file" && req.body.fileName) {
+        cb(null, req.body.fileName);
       } else {
         cb(null, file.originalname);
-      }
-      
+      } 
     }
 });
 const upload = multer({storage: storage});
 
 
 const router = new Router()
-const { clientName, host, port, userName, password, image , file, version, status, lastUpdate, deployedModules, variables, schedulers } = schema.tree
+const { clientName, host, port, userName, password, image , file, version, status, lastUpdate, deployedModules, variables, schedulers, fileName } = schema.tree
 
 /**
- * @api {post} /clients Create client
+ * @api {post} /clients Create client Ps: order is important files must be at the end
  * @apiName CreateClient
  * @apiGroup Client
  * @apiParam clientName Client's clientName.
@@ -84,7 +79,7 @@ router.get('/:id',
   show)
 
 /**
- * @api {put} /clients/:id Update client
+ * @api {put} /clients/:id Update client Ps: order is important files must be at the end 
  * @apiName UpdateClient
  * @apiGroup Client
  * @apiParam clientName Client's clientName.

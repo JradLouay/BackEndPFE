@@ -46,30 +46,27 @@ export const update = (req, res, next) =>{
       }
       if (req.files.image) {
         body.image = req.files.image[0].path
-        // delete old img if name didn't change it will work 
       }
       if (req.files.file) {
-        body.file = req.files.file[0].path;
+        body.file = req.files.file[0].path
       }
       
     Client.findById(req.params.id)
     .then(notFound(res))
     .then((client) =>{
       if (client) {
-
-        if(client.file){
-          fs.unlink(client.file, (err)=>{
-          // if (err) throw err;
-          console.log(client.file,' was deleted');
-          });
-        }
-        if(client.image){
-          fs.unlink(client.image, (err)=>{
-          // if (err) throw err;
-          console.log(client.image,' was deleted');
-          });
-        }
-
+        // if(client.file){
+        //   fs.unlink(client.file, (err)=>{
+        //   // if (err) throw err;
+        //   console.log(client.file,' was deleted');
+        //   });
+        // }
+        // if(client.image){
+        //   fs.unlink(client.image, (err)=>{
+        //   // if (err) throw err;
+        //   console.log(client.image,' was deleted');
+        //   });
+        // 
         return Object.assign(client, body).save()
         
       } else return null

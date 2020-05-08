@@ -20,9 +20,10 @@ export const create = ({ bodymen: { body }, params }, res, next) =>{
     if (client) {
         schedule.scheduleJob(scheduler.id, new Date(scheduler.date), ()=>{
         // axios post deploy to the depl server
+        console.log("scheduler executed")
         Scheduler.findById(scheduler.id)
         .then(notFound(res))
-        .then((scheduler) => scheduler ? Object.assign(scheduler, {status : "DONE"}).save() : null)
+        .then((scheduler) => scheduler ? Object.assign(scheduler, {status : "Deployed"}).save() : null)
       });
       return  client.view(true)
     }else return null

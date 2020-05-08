@@ -7,7 +7,8 @@ import { schema } from './model'
 export User, { schema } from './model'
 
 const router = new Router()
-const { email, password, name, picture, role } = schema.tree
+// const { email, password, name, picture, role } = schema.tree
+const { email, password, name, role } = schema.tree
 
 /**
  * @api {get} /users Retrieve users
@@ -21,7 +22,7 @@ const { email, password, name, picture, role } = schema.tree
  * @apiError 401 Admin access only.
  */
 router.get('/',
-  token({ required: true, roles: ['admin'] }),
+  // token({ required: true, roles: ['admin'] }),
   query(),
   index)
 
@@ -34,7 +35,7 @@ router.get('/',
  * @apiSuccess {Object} user User's data.
  */
 router.get('/me',
-  token({ required: true }),
+  // token({ required: true }),
   showMe)
 
 /**
@@ -65,8 +66,9 @@ router.get('/:id',
  * @apiError 409 Email already registered.
  */
 router.post('/',
-  master(),
-  body({ email, password, name, picture, role }),
+  // master(),
+  // body({ email, password, name, picture, role }),
+  body({ email, password, name, role }),
   create)
 
 /**
@@ -83,8 +85,9 @@ router.post('/',
  * @apiError 404 User not found.
  */
 router.put('/:id',
-  token({ required: true }),
-  body({ name, picture }),
+  // token({ required: true }),
+  // body({ name, picture }),
+  body({ name }),
   update)
 
 /**
@@ -114,7 +117,7 @@ router.put('/:id/password',
  * @apiError 404 User not found.
  */
 router.delete('/:id',
-  token({ required: true, roles: ['admin'] }),
+  // token({ required: true, roles: ['admin'] }),
   destroy)
 
 export default router
