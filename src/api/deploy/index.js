@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { create, index, show, update, destroy } from './controller'
+import { create, index, show, test, update, destroy, deploy, rollback } from './controller'
 import { schema } from './model'
 export Deploy, { schema } from './model'
 
@@ -18,8 +18,21 @@ const { clientId } = schema.tree
  * @apiError 404 Deploy not found.
  */
 router.post('/',
-  body({ clientId }),
+  // body({ clientId }),
   create)
+
+/**
+ * @api {post} /deploys test client info
+ * @apiName CreateDeploy
+ * @apiGroup Deploy
+ * @apiParam clientId Deploy's clientId.
+ * @apiSuccess {Object} deploy Deploy's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Deploy not found.
+ */
+router.post('/test',
+  // body({ clientId }),
+  test)
 
 /**
  * @api {get} /deploys Retrieve deploys
@@ -45,7 +58,19 @@ router.get('/:id',
   show)
 
 /**
- * @api {put} /deploys/:id Update deploy
+ * @api {get} /deploys/deploy/:id deploy app to client
+ * @apiName DeployToClient
+ * @apiGroup Deploy
+ * @apiParam clientId Deploy's clientId.
+ * @apiSuccess {Object} deploy Deploy's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Deploy not found.
+ */
+router.get('/deploy/:id',
+  deploy)
+
+/**
+ * @api {put} /deploys/update/:id Update services deploy
  * @apiName UpdateDeploy
  * @apiGroup Deploy
  * @apiParam clientId Deploy's clientId.
@@ -53,18 +78,27 @@ router.get('/:id',
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Deploy not found.
  */
-router.put('/:id',
-  body({ clientId }),
+router.get('/update/:id',
   update)
 
 /**
- * @api {delete} /deploys/:id Delete deploy
+ * @api {delete} /deploys/rollback/:id Stop services deploy
  * @apiName DeleteDeploy
  * @apiGroup Deploy
  * @apiSuccess (Success 204) 204 No Content.
  * @apiError 404 Deploy not found.
  */
-router.delete('/:id',
+router.get('/rollback/:id',
+rollback)
+
+/**
+ * @api {delete} /deploys/stop/:id Stop services deploy
+ * @apiName DeleteDeploy
+ * @apiGroup Deploy
+ * @apiSuccess (Success 204) 204 No Content.
+ * @apiError 404 Deploy not found.
+ */
+router.get('/stop/:id',
   destroy)
 
 export default router
