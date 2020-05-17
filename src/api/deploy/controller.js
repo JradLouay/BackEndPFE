@@ -63,6 +63,17 @@ export const deploy = (req, res, next) =>
               }).then(()=> {
                 // send docker-compose.file
                 sse.send('Starting file Transfer', 'step')
+                // make file from clients vars 
+                // const content = client.variables.forEach(element => {
+                //     ssh.execCommand('').then(function(result) {
+                //       if (result.stdout) {
+                //         // sse.send(result.stdout, 'feedback')
+                //       }
+                //       if (result.onStderr) {
+                //         sse.send('Env Variable failed to be sent to ', 'error')
+                //       }
+                //       })
+                // });
                 // sse.send('Something went wrong while sending the file', 'error');
                 ssh.putFile('./'+client.file,"docker-compose.yml").then(()=> {
                   sse.send('File has been sent successfully', 'feedback')

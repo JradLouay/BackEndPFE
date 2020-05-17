@@ -20,6 +20,26 @@ export const create = ({ bodymen: { body }, params }, res, next) =>
     .catch(next)
 }
 
+export const addList = (req, res, next) =>
+{   
+    Client.findById(req.params.clientId)
+    .populate('variables')
+    .then(notFound(res))
+    .then((client) => {
+      if (client) {
+        for (const key in req.body) {
+          const variable = new Variable({ key : key, value : req.body[key]});
+          client.variables.push(variable); 
+          variable.save();
+        }
+        return client.save();
+      } else return null 
+    })
+    .then((client) => client ? client.view(true) : null)
+    .then(success(res, 201))
+    .catch(next)
+}
+
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   Variable.find(query, select, cursor)
     .then((variables) => variables.map((variable) => variable.view()))

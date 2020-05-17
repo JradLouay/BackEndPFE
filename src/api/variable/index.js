@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { create, index, show, update, destroy } from './controller'
+import { create, addList, index, show, update, destroy } from './controller'
 import { schema } from './model'
 export Variable, { schema } from './model'
 
@@ -21,6 +21,20 @@ const { key, value } = schema.tree
 router.post('/:clientId',
   body({ key, value }),
   create)
+/**
+ * @api {post} /variables/addList/:clientId add a list of variables to clientId
+ * @apiName CreateVariable
+ * @apiGroup Variable
+ * @apiParam list of Variables
+ * @apiParam key Variable's key.
+ * @apiParam value Variable's value.
+ * @apiSuccess {Object} variable Variable's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Variable not found.
+ */
+router.post('/addList/:clientId',
+  // body({ key, value }),
+  addList)
 
 /**
  * @api {get} /variables Retrieve variables
