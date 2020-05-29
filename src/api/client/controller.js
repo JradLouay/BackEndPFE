@@ -2,8 +2,9 @@ import { success, notFound } from '../../services/response/'
 import { Client } from './index'
 import { Scheduler } from '../scheduler'
 import { Variable } from '../variable'
-
-let fs = require('fs');
+import { Module } from '../module'
+import YAML from 'yaml'
+import * as fs from "fs";
 
 export const create = (req, res, next) =>
     {
@@ -16,11 +17,10 @@ export const create = (req, res, next) =>
       if (req.files.file) {
         body.file = req.files.file[0].path
       }
-
       Client.create(body)
       .then((client) => client.view(true))
       .then(success(res, 201))
-      .catch(next)
+      .catch(next);
     }
     
 
@@ -34,7 +34,6 @@ export const show = ({ params }, res, next) =>
     Client.findById(params.id)
     .populate('variables')
     .populate('schedulers')
-    .populate('deployedModules')
     .then(notFound(res))
     .then((client) => client ? client.view() : null)
     .then(success(res))
@@ -55,25 +54,12 @@ export const update = (req, res, next) =>{
     .then(notFound(res))
     .then((client) =>{
       if (client) {
-        // if(client.file){
-        //   fs.unlink(client.file, (err)=>{
-        //   // if (err) throw err;
-        //   console.log(client.file,' was deleted');
-        //   });
-        // }
-        // if(client.image){
-        //   fs.unlink(client.image, (err)=>{
-        //   // if (err) throw err;
-        //   console.log(client.image,' was deleted');
-        //   });
-        // 
-        return Object.assign(client, body).save()
-        
+        return Object.assign(client, body).save();
       } else return null
     })
     .then((client) => client ? client.view(true) : null)
     .then(success(res))
-    .catch(next)
+    .catch(next);
   }
 
 export const destroy = ({ params }, res, next) =>

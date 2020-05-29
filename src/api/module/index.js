@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { create, index, show, update, destroy, addToClient, removeFromClient, undeployedModules } from './controller'
+import { create, index, show, update, destroy} from './controller'
 import { schema } from './model'
 export Module, { schema } from './model'
 
@@ -24,17 +24,17 @@ router.post('/',
   body({ moduleName, version, lastUpdate, description }),
   create)
 
-/**
- * @api {post} /modules/:clientId/:moduleId add module to client 
- * @apiName AddModuleToCLient
- * @apiGroup Module
- * @apiSuccess {Object} module Module's data.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 404 Module not found.
- */
-router.post('/:clientId/:moduleId',
-  body({}),
-  addToClient)
+// /**
+//  * @api {post} /modules/:clientId/:moduleId add module to client 
+//  * @apiName AddModuleToCLient
+//  * @apiGroup Module
+//  * @apiSuccess {Object} module Module's data.
+//  * @apiError {Object} 400 Some parameters may contain invalid values.
+//  * @apiError 404 Module not found.
+//  */
+// router.post('/:clientId/:moduleId',
+//   body({}),
+//   addToClient)
 
 /**
  * @api {get} /modules Retrieve modules
@@ -47,17 +47,17 @@ router.post('/:clientId/:moduleId',
 router.get('/',
   query(),
   index)
-/**
- * @api {get} /modules/clientId Retrieve filtredModules
- * @apiName RetrieveFiltredModules
- * @apiGroup Module
- * @apiUse listParams
- * @apiSuccess {Object[]} modules List of modules.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- */
-router.get('/:clientId',
-  query(),
-  undeployedModules)
+// /**
+//  * @api {get} /modules/clientId Retrieve filtredModules
+//  * @apiName RetrieveFiltredModules
+//  * @apiGroup Module
+//  * @apiUse listParams
+//  * @apiSuccess {Object[]} modules List of modules.
+//  * @apiError {Object} 400 Some parameters may contain invalid values.
+//  */
+// router.get('/:clientId',
+//   query(),
+//   undeployedModules)
 
 /**
  * @api {get} /modules/:id Retrieve module
@@ -96,14 +96,14 @@ router.put('/:id',
 router.delete('/:id',
   destroy)
 
-/**
- * @api {delete} /modules/:clientId/:moduleId Delete module from client
- * @apiName DeleteModule
- * @apiGroup Module
- * @apiSuccess (Success 204) 204 No Content.
- * @apiError 404 Module not found.
- */
-router.delete('/:clientId/:moduleId',
-  removeFromClient)
+// /**
+//  * @api {delete} /modules/:clientId/:moduleId Delete module from client
+//  * @apiName DeleteModule
+//  * @apiGroup Module
+//  * @apiSuccess (Success 204) 204 No Content.
+//  * @apiError 404 Module not found.
+//  */
+// router.delete('/:clientId/:moduleId',
+//   removeFromClient)
 
 export default router

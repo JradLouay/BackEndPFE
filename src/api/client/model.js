@@ -28,15 +28,17 @@ const clientSchema = new Schema({
   version: {
     type: String
   },
+  prevVersions: [String],
   status: {
-    type: String
+    type: String,
+    default : 'Not Deployed'
   },
   lastUpdate: {
     type: String
   },
-  deployedModules: [
-    { type: Schema.Types.ObjectId, ref :'Module' } 
-  ],
+  // deployedModules: [
+  //   { type: Schema.Types.ObjectId, ref :'Module' } 
+  // ],
   variables: [
     {type: Schema.Types.ObjectId, ref: 'Variable'}
   ],
@@ -65,9 +67,10 @@ clientSchema.methods = {
       fileName: this.fileName,
       file: this.file,
       version: this.version,
+      prevVersions: this.prevVersions,
       status: this.status,
       lastUpdate: this.lastUpdate,
-      deployedModules: this.deployedModules,
+      // deployedModules: this.deployedModules,
       variables: this.variables,
       schedulers: this.schedulers,
       createdAt: this.createdAt,
