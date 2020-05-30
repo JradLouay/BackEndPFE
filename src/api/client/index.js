@@ -4,11 +4,19 @@ import { middleware as body } from 'bodymen'
 import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
 export Client, { schema } from './model'
+// import * as fs from "fs";
+// import YAML from 'yaml';
+// import formidable from 'formidable';
+
+
+// Get document, or throw exception on error
 
 const multer = require('multer');
 
 // order is important files must stay at the end of form-data
+// const form = formidable({ multiples: true });
 const storage = multer.diskStorage({
+
     destination : function (req, file, cb) {
       if (file.fieldname === "image") {
         cb(null, './image/');
@@ -25,7 +33,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({storage: storage});
+const upload = multer({ storage: storage });
 const router = new Router()
 
 // const { clientName, host, port, userName, password, image , file, version, status, lastUpdate, deployedModules, variables, schedulers, fileName } = schema.tree
@@ -52,6 +60,16 @@ const router = new Router()
  * @apiError 404 Client not found.
  */
 router.post('/',
+// function (req, res, next) {
+//               let error = false
+//               form.parse(req, (err, fields, files) => {
+//                 try {
+//                   let doc = YAML.parse(fs.readFileSync(files.file.path, 'utf8'));
+//                 } catch (e) {
+//                   error = true;
+//                 }})
+//               error ? res.status(500).json({ }) : next()
+//               },
   upload.fields([{name: 'image'},{name: 'file'}]),
   // body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate, deployedModules, variables, schedulers }),
   create)
@@ -101,6 +119,20 @@ router.get('/:id',
  * @apiError 404 Client not found.
  */
 router.put('/:id',
+// function (req, res, next) {
+//               let error = false
+//               form.parse(req, (err, fields, files) => {
+//                 try {
+                  
+//                   let doc = YAML.parse(fs.readFileSync(files.file.path, 'utf8'),{ schema:  } );
+//                   console.log("parsed", doc);
+                  
+//                 } catch (e) {
+//                   console.log(e);
+//                   error = true;
+//                 }})
+//               error ? res.status(500).json({ }) : next()
+//   },
   upload.fields([{name: 'image'},{name: 'file'}]),
   // body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate, deployedModules, variables, schedulers }),
   update)

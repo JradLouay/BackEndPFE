@@ -3,7 +3,7 @@ import { Client } from './index'
 import { Scheduler } from '../scheduler'
 import { Variable } from '../variable'
 import { Module } from '../module'
-import YAML from 'yaml'
+// import YAML from 'yaml'
 import * as fs from "fs";
 
 export const create = (req, res, next) =>

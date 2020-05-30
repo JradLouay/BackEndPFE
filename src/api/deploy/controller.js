@@ -2,12 +2,13 @@ import { success, notFound } from '../../services/response/'
 import { Deploy } from '.'
 import { Client } from '../client'
 
-const fs = require('fs');
+import * as fs from "fs";
 const tmp = require('tmp');
-let SSE = require('express-sse');
+// let SSE = require('express-sse'); 
+import SSE from 'express-sse';
 let sse = new SSE();
-let NodeSSH = require('node-ssh')
-let ssh = new NodeSSH()
+let NodeSSH = require('node-ssh');
+let ssh = new NodeSSH();
 
 export const create = (req, res, next) => {
 
@@ -49,76 +50,83 @@ export const deploy = (req, res, next) => {
     .then(notFound(res))
     .then((client) => {
       if (client) {
-        // config within client spec
-        sse.send('Establishing SSH connexion', 'step')
-        ssh.connect({
+        // config within client spec  ^
+        sse.send('Establishing SSH connexion', 'step');
+        ssh.connect({//step 1
           host: client.host,
           username: client.userName,
           password: client.password
-        }).then(() => {
-          sse.send('SSH connexion established ', 'feedback')
-          sse.send('Starting file Transfer', 'step')
+        }).then(() => {//------------------------------------------first STEP
+          sse.send('SSH connexion established', 'feedback');
+          sse.send('Starting file Transfer', 'step');
           if (client.file) {
             return ssh.putFile('./' + client.file, "docker-compose.yml").then(() => {
-              sse.send('Docker-compose.yml file has been sent successfully', 'feedback')
+              sse.send('Docker-compose.yml file has been sent successfully', 'feedback');
             }, (err) => {
               console.log(err);
               sse.send('Something went wrong while sending the file', 'error');
               return Promise.reject(err);
             });
           } else {
-            sse.send('Docker-compose file not found', 'error')
+            sse.send('Docker-compose file not found', 'error');
             return Promise.reject();
           }
-        }, (err) => { // handle Error step 1
+        }, (err) => {
           console.log("error mta3 el connexion", err);
-          sse.send(`can't connect to the server`, 'error')
+          sse.send(`can't connect to the server`, 'error');
           return Promise.reject(err);
-
-        }).then(() => { // tab3ath .env
-
+        }).then(() => {//--------------------------------------------second STEP
           tmp.file(function _tempFileCreated(err, path, fd, cleanupCallback) {
             if (err) return Promise.reject(err);
-
             client.variables.forEach(element => {
               fs.appendFile(path, element.key + " = " + element.value + "\n", (err) => {
                 if (err) {
                   return Promise.reject(err);
                 }
-              })
-            })
+              });
+            });
             return ssh.putFile(path, ".env").then(() => {
-              sse.send('.env File has been sent successfully', 'feedback')
+              sse.send('.env File has been sent successfully', 'feedback');
+              sse.send('Demployment process started', 'step');
               cleanupCallback();
-            }, (err) => { //handle error step2 file transfer 
-              console.log(err);
-              sse.send('Something went wrong while sending the file', 'error');
-              cleanupCallback();
-              return Promise.reject(err);
-            })
+            }
+              , (err) => { //handle error step2 file transfer 
+                console.log(err);
+                sse.send('Something went wrong while sending .env file', 'error');
+                cleanupCallback();
+                return Promise.reject(err);
+              });
           });
-        }).then(() => {
-          sse.send('Demployment process started', 'step')
-          console.log('--------------------------------------------------------partie deploiment');
-          return ssh.exec('docker --version', [], {
-            onStdout(chunk) {
-              sse.send(chunk.toString('utf8'), 'feedback')
-            },
-            onStderr(chunk) {
-              sse.send(chunk.toString('utf8'), 'feedback')
-              sse.send('Somthing went wrong', 'error')
-              return Promise.reject();
-            },
-          })
-        }, (err) => {//handle erro send .env + create temp .env file
-          console.log("error mta3 el .env file", err);
-          sse.send(`Error while sending .env`, 'error')
-          return Promise.reject(err);
 
+        }, (err) => {
+          sse.send('Something went wrong while sending .env file', 'error');
+          return Promise.reject(err);
         }).then(() => {
-          // console.log('---------------------------------------------------finalize');
+          // return ssh.exec('docker-compose up', ['-d'], {
+          //   onStdout(chunk) {
+          //     console.log(chunk.toString('utf8'));
+          //     sse.send(chunk.toString('utf8'), 'feedback');
+          //   },
+          //   onStderr(chunk) {
+          //     console.log(chunk.toString('utf8'))
+          //     sse.send('Something went wrong', 'error')
+          //     return Promise.reject();
+          //   }
+          // })
+          return ssh.execCommand('docker-compose up -d', {  }).then((result) => {
+            console.log('STDOUT: ' + result.stdout)
+            console.log('STDERR: ' + result.stderr)
+          })
+        }, (err) => {
+          console.log(err);
+          sse.send('Something went wrong while running docker-compose', 'error');
+          return Promise.reject(err);
+        }).then(null, (err) => {
+          console.log(err);
+          return Promise.reject(err);
+        }).then(() => {
           sse.send('Demployment process finished', 'step')
-          let version
+          let version = "";
           try {
             version = client.variables.find(element => element.key === "VERSION").value
           }
@@ -135,6 +143,7 @@ export const deploy = (req, res, next) => {
           sse.send(`Something went wrong changing client info`, 'error')
           return Promise.reject(err);
         })
+
       } else {
         sse.send('Client not Found', 'error')
         return null
