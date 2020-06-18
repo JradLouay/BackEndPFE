@@ -36,7 +36,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 const router = new Router()
 
-// const { clientName, host, port, userName, password, image , file, version, status, lastUpdate, deployedModules, variables, schedulers, fileName } = schema.tree
+// const { clientName, host, port, userName, password, image , file, version, status, lastUpdate, deployedModules, variables, schedulers, fileName, prevVersion } = schema.tree
 
 /**
  * @api {post} /clients Create client Ps: order is important files must be at the end

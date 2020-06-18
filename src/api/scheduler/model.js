@@ -21,6 +21,9 @@ const schedulerSchema = new Schema({
   },
   status: {
     type: String
+  },
+  feedBack: {
+    type: String
   }
 }, {
   timestamps: true,

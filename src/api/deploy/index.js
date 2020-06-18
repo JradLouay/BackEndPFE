@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { create, index, show, test, update, destroy, deploy, rollback } from './controller'
+import { create, index, show, test, update, destroy, deploy, rollback, info } from './controller'
 import { schema } from './model'
 export Deploy, { schema } from './model'
 
@@ -90,6 +90,16 @@ router.get('/update/:id',
  */
 router.get('/rollback/:id',
 rollback)
+
+/**
+ * @api {delete} /deploys/stop/:id Get service Info
+ * @apiName Info
+ * @apiGroup Info
+ * @apiSuccess (Success 204) 204 No Content.
+ * @apiError 404 Deploy not found.
+ */
+router.get('/info/:id',
+  info)
 
 /**
  * @api {delete} /deploys/stop/:id Stop services deploy

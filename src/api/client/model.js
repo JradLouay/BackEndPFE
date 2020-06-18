@@ -28,10 +28,12 @@ const clientSchema = new Schema({
   version: {
     type: String
   },
-  prevVersions: [String],
+  prevVersion: {
+    type: String
+},
   status: {
     type: String,
-    default : 'Not Deployed'
+    default : 'Not Deployed' // Deployed || Not Deployed
   },
   lastUpdate: {
     type: String
@@ -67,7 +69,7 @@ clientSchema.methods = {
       fileName: this.fileName,
       file: this.file,
       version: this.version,
-      prevVersions: this.prevVersions,
+      prevVersion: this.prevVersion,
       status: this.status,
       lastUpdate: this.lastUpdate,
       // deployedModules: this.deployedModules,

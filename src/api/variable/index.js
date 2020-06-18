@@ -9,7 +9,7 @@ const router = new Router()
 const { key, value } = schema.tree
 
 /**
- * @api {post} /variables/:clientId Create variable for a client
+ * @api {post} /variables/:clientId Create variable for a client 
  * @apiName CreateVariable
  * @apiGroup Variable
  * @apiParam key Variable's key.
