@@ -49,8 +49,7 @@ export const create = ({ bodymen: { body }, params }, res, next) =>{
           }).save() : (
                         Object.assign(client, {
                         status: "Deployed"
-                        }).save(),
-                        sse.send(`VERSION variable not found`, 'feedback')
+                        }).save()
                         )
           Scheduler.findById(scheduler.id)
           .then(notFound(res))

@@ -19,7 +19,6 @@ export const showMe = ({ user }, res) =>
 
 export const create = ({ bodymen: { body } }, res, next) =>
   {
-    console.log("hni hna")
     User.create(body)
     .then((user) => user.view(true))
     .then(success(res, 201))
