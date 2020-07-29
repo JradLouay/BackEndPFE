@@ -2,25 +2,31 @@ import { success, notFound } from '../../services/response/'
 import { Client } from './index'
 import { Scheduler } from '../scheduler'
 import { Variable } from '../variable'
+import Activity from '../../services/logger/Activity'
 // import { Module } from '../module'
 // import YAML from 'yaml'
 import * as fs from "fs";
 
-export const create = (req, res, next) =>
+export const create = ({ bodymen: { body }, user, files }, res, next) =>
     {
-      const body = {
-        ...req.body
+      console.log("user ", user);
+      if (files.image) {
+        body.image = files.image[0].path
       }
-      if (req.files.image) {
-        body.image = req.files.image[0].path
+      if (files.file) {
+        body.file = files.file[0].path
       }
-      if (req.files.file) {
-        body.file = req.files.file[0].path
-      }
+      console.log("body :", body);
       Client.create(body)
       .then((client) => client.view(true))
       .then(success(res, 201))
-      .catch(next);
+      .then(async (client)=>{
+        await new Activity()
+        // .performedOn(someContentDocument)
+        .causedBy(user)
+        .log('Add Client ')
+      })
+      .catch(next)
     }
     
 
@@ -38,19 +44,18 @@ export const show = ({ params }, res, next) =>
     .then((client) => client ? client.view() : null)
     .then(success(res))
     .catch(next)
-
-export const update = (req, res, next) =>{
-      const body = {
-        ...req.body
+    
+export const update = ({ bodymen: { body }, params, user, files }, res, next) =>{
+      
+  Object.keys(body).forEach(key => body[key] === undefined && delete body[key])
+      if (files.image) {
+        body.image = files.image[0].path
       }
-      if (req.files.image) {
-        body.image = req.files.image[0].path
-      }
-      if (req.files.file) {
-        body.file = req.files.file[0].path
+      if (files.file) {
+        body.file = files.file[0].path
       }
       
-    Client.findById(req.params.id)
+    Client.findById(params.id)
     .then(notFound(res))
     .then((client) =>{
       if (client) {
@@ -59,6 +64,12 @@ export const update = (req, res, next) =>{
     })
     .then((client) => client ? client.view(true) : null)
     .then(success(res))
+    .then(async (client)=>{
+      await new Activity()
+      // .performedOn(someContentDocument)
+      .causedBy(user)
+      .log('Update Client ')
+    })
     .catch(next);
   }
 
@@ -96,6 +107,12 @@ export const destroy = ({ params }, res, next) =>
       }else return null
     })
     .then(success(res, 204))
+    .then(async (client)=>{
+      await new Activity()
+      // .performedOn(someContentDocument) //client
+      .causedBy(user)
+      .log('delete Client ')
+    })
     .catch(next)
 
 

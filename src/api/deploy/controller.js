@@ -1,10 +1,16 @@
 import { success, notFound } from '../../services/response/'
 import { Deploy } from '.'
 import { Client } from '../client'
-import { connect, fileTransfer, envFile, composeUp, composeDown, composeUpdate, composePs, envFileRollback } from './steps';
-
-// import * as fs from "fs";
-// import tmp from 'tmp';
+import { 
+connect, 
+fileTransfer,
+envFile, 
+composeUp, 
+composeDown, 
+composeUpdate, 
+composePs, 
+envFileRollback } from './steps';
+import Activity from '../../services/logger/Activity'
 import SSE from 'express-sse';
 import NodeSSH from 'node-ssh';
 let sse = new SSE();
@@ -26,7 +32,6 @@ export const test = (req, res, next) =>
       next();
     })
 
-
 export const index = ({ querymen: { query, select, cursor } }, res, next) => {
   Deploy.find(query, select, cursor)
     .then((deploys) => deploys.map((deploy) => deploy.view()))
@@ -43,6 +48,7 @@ export const show = ({ params }, res, next) => {
 }
 
 export const deploy = (req, res, next) => {
+  console.log("request...... :", req.user);
   sse.init(req, res)
   Client.findById(req.params.id)
     .populate('variables')
@@ -79,6 +85,12 @@ export const deploy = (req, res, next) => {
         .catch((err)=>{
           console.log('ERROR FROM :', err);
         })
+    })
+    .then(async (client)=>{
+      await new Activity()
+      .performedOn(client)
+      .causedBy(req.user ? req.user : undefined)
+      .log('Deploy ')
     })
     .then(success(res))
     .catch(next)
@@ -123,16 +135,21 @@ export const update = (req, res, next) => {
         })
         .catch((err)=>{
           console.log('ERROR FROM :', err);
+          // send error to client
         })
-        
-     
+    })
+    .then(async (client)=>{
+      await new Activity()
+      .performedOn(client)
+      .causedBy(req.user ? req.user : undefined)
+      .log('Deploy ')
     })
     .then(success(res))
     .catch(next)
 
 }
 export const rollback = (req, res, next) =>{
-
+  
   sse.init(req, res)
   Client.findById(req.params.id)
     .populate('variables')
@@ -169,30 +186,34 @@ export const rollback = (req, res, next) =>{
         .catch((err)=>{
           console.log('ERROR FROM :', err);
         })
-        
-     
     })
     .then(success(res))
+    .then(async (client)=>{
+      await new Activity()
+      .performedOn(client)
+      .causedBy(req.user ? req.user : undefined)
+      .log('Deploy ')
+    })
     .catch(next)
 }
 
-export const info = (req, res, next) =>
+export const stats = (req, res, next) =>
 {
   Client.findById(req.params.id)
     .then(notFound(res))
     .then((client) => {
-      if (client.status === 'Deployed') {
+      if (client.status == "Deployed" ) {
         // config within client spec
         connect(
           client.host,
           client.userName,
           client.password
         ).then(() => {
-          return composePs(sse)
+          return composePs()
         })
+        .then(success(res))
       } else return null;
     })
-    .then(success(res))
     .catch(next)
 }
 export const destroy = (req, res, next) =>
@@ -219,5 +240,11 @@ export const destroy = (req, res, next) =>
       } else return null;
     })
     .then(success(res))
+    .then(async (client)=>{
+      await new Activity()
+      .performedOn(client)
+      .causedBy(req.user ? req.user : undefined)
+      .log('Deploy ')
+    })
     .catch(next)
 }

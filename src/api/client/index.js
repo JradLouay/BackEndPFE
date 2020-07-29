@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
+import { password as passwordAuth, master, token } from '../../services/passport'
 import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
 export Client, { schema } from './model'
@@ -36,7 +37,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 const router = new Router()
 
-// const { clientName, host, port, userName, password, image , file, version, status, lastUpdate, deployedModules, variables, schedulers, fileName, prevVersion } = schema.tree
+const { clientName, host, port, userName, password, image , file, version, status, lastUpdate, deployedModules, variables, schedulers, fileName, prevVersion } = schema.tree
 
 /**
  * @api {post} /clients Create client Ps: order is important files must be at the end
@@ -60,18 +61,9 @@ const router = new Router()
  * @apiError 404 Client not found.
  */
 router.post('/',
-// function (req, res, next) {
-//               let error = false
-//               form.parse(req, (err, fields, files) => {
-//                 try {
-//                   let doc = YAML.parse(fs.readFileSync(files.file.path, 'utf8'));
-//                 } catch (e) {
-//                   error = true;
-//                 }})
-//               error ? res.status(500).json({ }) : next()
-//               },
   upload.fields([{name: 'image'},{name: 'file'}]),
-  // body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate, deployedModules, variables, schedulers }),
+  body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate }),
+  token({ required: true, roles: ['admin'] }),
   create)
 
 /**
@@ -119,23 +111,9 @@ router.get('/:id',
  * @apiError 404 Client not found.
  */
 router.put('/:id',
-// function (req, res, next) {
-//               let error = false
-//               form.parse(req, (err, fields, files) => {
-//                 try {
-                  
-//                   let doc = YAML.parse(fs.readFileSync(files.file.path, 'utf8'),{ schema:  } );
-//                   console.log("parsed", doc);
-                  
-//                 } catch (e) {
-//                   console.log(e);
-//                   error = true;
-//                 }})
-//               error ? res.status(500).json({ }) : next()
-//   },
   upload.fields([{name: 'image'},{name: 'file'}]),
-  // body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate, deployedModules, variables, schedulers }),
-  update)
+  body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate })
+  ,update)
 
 /**
  * @api {delete} /clients/:id Delete client

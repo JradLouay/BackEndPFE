@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+const logPlugin = require('../../services/logger/plugin')
 
 const clientSchema = new Schema({
   clientName: {
@@ -85,8 +86,9 @@ clientSchema.methods = {
     } : view
   }
 }
-
+clientSchema.plugin(logPlugin);
 const model = mongoose.model('Client', clientSchema)
 
 export const schema = model.schema
 export default model
+ 

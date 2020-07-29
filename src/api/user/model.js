@@ -5,6 +5,7 @@ import mongooseKeywords from 'mongoose-keywords'
 import { env } from '../../config'
 
 const roles = ['user', 'admin']
+// const states = ['blocked', 'unblocked']
 
 const userSchema = new Schema({
   email: {
@@ -24,6 +25,10 @@ const userSchema = new Schema({
     type: String,
     index: true,
     trim: true
+  },
+  blocked: {
+    type: Boolean,
+    default: true
   },
   role: {
     type: String,
@@ -66,7 +71,7 @@ userSchema.pre('save', function (next) {
 userSchema.methods = {
   view (full) {
     const view = {}
-    let fields = ['id', 'name', 'picture']
+    let fields = ['id', 'name', 'picture', 'role', 'blocked']
 
     if (full) {
       fields = [...fields, 'email', 'createdAt']

@@ -1,16 +1,20 @@
 import http from 'http'
 import { env, mongo, port, ip, apiRoot } from './config'
 import mongoose from './services/mongoose'
+const logPlugin = require('./services/logger/plugin')
+mongoose.plugin(logPlugin)
 import express from './services/express'
 import api from './api'
-
-const app = express(apiRoot, api)
-const server = http.createServer(app)
 
 if (mongo.uri) {
   mongoose.connect(mongo.uri)
 }
 mongoose.Promise = Promise
+
+
+const app = express(apiRoot, api)
+const server = http.createServer(app)
+
 
 setImmediate(() => {
   server.listen(port, ip, () => {

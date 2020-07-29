@@ -1,12 +1,11 @@
 import { Router } from 'express'
-import { middleware as query } from 'querymen'
-import { middleware as body } from 'bodymen'
-import { create, index, show, test, update, destroy, deploy, rollback, info } from './controller'
-import { schema } from './model'
+import { create, index, show, test, update, destroy, deploy, rollback, stats } from './controller'
+import { token } from '../../services/passport'
+// import { schema } from './model'
 export Deploy, { schema } from './model'
 
 const router = new Router()
-const { clientId } = schema.tree
+// const { clientId } = schema.tree
 
 /**
  * @api {post} /deploys Create deploy
@@ -19,6 +18,7 @@ const { clientId } = schema.tree
  */
 router.post('/',
   // body({ clientId }),
+  // token({ required: true }),
   create)
 
 /**
@@ -33,18 +33,6 @@ router.post('/',
 router.post('/test',
   // body({ clientId }),
   test)
-
-/**
- * @api {get} /deploys Retrieve deploys
- * @apiName RetrieveDeploys
- * @apiGroup Deploy
- * @apiUse listParams
- * @apiSuccess {Object[]} deploys List of deploys.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- */
-router.get('/',
-  query(),
-  index)
 
 /**
  * @api {get} /deploys/:id Retrieve deploy
@@ -67,6 +55,7 @@ router.get('/:id',
  * @apiError 404 Deploy not found.
  */
 router.get('/deploy/:id',
+// token({ required: true }),
   deploy)
 
 /**
@@ -89,6 +78,7 @@ router.get('/update/:id',
  * @apiError 404 Deploy not found.
  */
 router.get('/rollback/:id',
+// token({ required: true }),
 rollback)
 
 /**
@@ -98,8 +88,8 @@ rollback)
  * @apiSuccess (Success 204) 204 No Content.
  * @apiError 404 Deploy not found.
  */
-router.get('/info/:id',
-  info)
+router.get('/stats/:id',
+  stats)
 
 /**
  * @api {delete} /deploys/stop/:id Stop services deploy
@@ -109,6 +99,7 @@ router.get('/info/:id',
  * @apiError 404 Deploy not found.
  */
 router.get('/stop/:id',
+// token({ required: true }),
   destroy)
 
 export default router

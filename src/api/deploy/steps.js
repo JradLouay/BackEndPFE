@@ -1,22 +1,21 @@
 import * as fs from "fs";
 import NodeSSH from 'node-ssh';
 import tmp from 'tmp';
-import cmdParser from "./parser";
 let ssh = new NodeSSH();
 
 export const connect = (host, username, password)=>{
     console.log("----------------------step 1");
-    
     return ssh.connect({
       host: host,
       username: username,
       password: password
-    })
+    }).catch(()=> {
+      throw new Error("Connection Error")
+    } )
   }
 
 export const stepError = (n)=>{
   console.log('error catched ', n);
-  
   throw(n);
 }
 
@@ -85,7 +84,7 @@ export const envFileRollback = (variables, sse, prevVersion)=> {
 }
 
 export const composeUp = (sse) =>{
-  console.log("----------------------step 3");
+  console.log("---------UP-------------step 3");
   
   return ssh.execCommand('docker-compose up -d', {  }).then((result) => {
     sse.send('STDOUT: ' + result.stdout ,'feedback' )
@@ -109,16 +108,15 @@ export const composeDown = (sse) =>{
     sse.send('STDOUT: ' + result.stdout ,'feedback' )
     sse.send('STDERR: ' + result.stderr, 'feedback')
   })
-}
+} 
 
 export const composePs = () =>{
   console.log("----------------------step 2");
-  
-  return ssh.execCommand(`docker container ls `, {  }).then((result) => {
-    console.log(result.stdout )
-    // sse.send('STDERR: ' + result.stderr, 'feedback')
-    // console.log(cmdParser(result.stdout));
+  return ssh.execCommand(`/snap/bin/docker ps --format '{{json .}}'  `, {  }).then((result) => {
+    console.log(result);
+    return result.stdout.split('\n').map( state=> JSON.parse(state));
   })
+
 }
 
 

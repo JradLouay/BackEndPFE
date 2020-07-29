@@ -7,8 +7,7 @@ import { schema } from './model'
 export User, { schema } from './model'
 
 const router = new Router()
-// const { email, password, name, picture, role } = schema.tree
-const { email, password, name, role } = schema.tree
+const { email, password, name, role, blocked } = schema.tree
 
 /**
  * @api {get} /users Retrieve users
@@ -68,7 +67,7 @@ router.get('/:id',
 router.post('/',
   // master(),
   // body({ email, password, name, picture, role }),
-  body({ email, password, name, role }),
+  body({ email, password, name, role, blocked }),
   create)
 
 /**
@@ -85,9 +84,27 @@ router.post('/',
  * @apiError 404 User not found.
  */
 router.put('/:id',
-  // token({ required: true }),
+// async function (req, res, next) {
+//   // let error = false
+//   // form.parse(req, (err, fields, files) => {
+//   //   try {
+//   //     let doc = YAML.parse(fs.readFileSync(files.file.path, 'utf8'));
+//   //   } catch (e) {
+//   //     error = true;
+//   //   }})
+//   // error ? res.status(500).json({ }) : next()
+
+//   // console.log(jwt_decode(req)
+//   console.log(req.headers);
+//   await new Activity()
+//   // .performedOn()
+//   //     .causedBy('louay')
+//       .log('look mum i logged something')
+//       next()
+//   },
+  token({ required: true }),
   // body({ name, picture }),
-  body({ name }),
+  body({ name, email, role, blocked }),
   update)
 
 /**
