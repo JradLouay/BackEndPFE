@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import YAML from 'yaml'
 
 const moduleSchema = new Schema({
   moduleName: {
@@ -29,7 +30,7 @@ moduleSchema.methods = {
       moduleName: this.moduleName,
       version: this.version,
       lastUpdate: this.lastUpdate,
-      description: this.description,
+      description: YAML.stringify(JSON.parse(this.description)),
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }

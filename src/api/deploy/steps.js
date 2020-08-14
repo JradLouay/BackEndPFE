@@ -83,21 +83,38 @@ export const envFileRollback = (variables, sse, prevVersion)=> {
        });
 }
 
-export const composeUp = (sse) =>{
-  console.log("---------UP-------------step 3");
-  
-  return ssh.execCommand('docker-compose up -d', {  }).then((result) => {
-    sse.send('STDOUT: ' + result.stdout ,'feedback' )
-    sse.send('STDERR: ' + result.stderr, 'feedback')
+export const containerLogs = (name) =>{
+
+  console.log("---------UP-------------step 3", name);
+
+  return ssh.execCommand(`/snap/bin/docker logs ${name}`, {}).then((result) => {
+    // console.log(result.stdout);
+    return result.stdout.replace(/\n/g, '\n\r')+result.stderr.replace(/\n/g, '\n\r');  // new lines are normalized to \r xterm.js needs an actual line feed character \n we replace \n with \n\r
   })
 }
+
+export const composeUp = (sse) =>{
+  console.log("---------UP-------------step 3");
+
+  return ssh.exec('docker-compose up', ['-d'], {
+    onStdout(chunk) {
+      sse.send(chunk.toString('utf8'),'feedback' )
+    },
+    onStderr(chunk) {
+      sse.send(chunk.toString('utf8'), 'feedback')
+    },
+  }).then(res=>console.log(res))
+  .catch((err)=> console.log("err", err))
+}
+
 export const composeUpdate = (sse = null) =>{
   console.log("---------UPDATE-------------step 3");
   
-  return ssh.execCommand('docker-compose down --volumes && docker-compose ps && docker-compose up -d ', {  }).then((result) => {
-   if (sse) sse.send('STDOUT: ' + result.stdout ,'feedback' );
+  return ssh.execCommand('docker-compose down --volumes && docker-compose ps && docker-compose up -d ', {  })
+  .then((result) => {
+   if (sse) sse.send(result.stdout ,'feedback' );
     console.log('STDOUT: ' + result.stdout ,'feedback' );
-   if (sse) sse.send('STDERR: ' + result.stderr, 'feedback');
+   if (sse) sse.send(result.stderr, 'feedback');
     console.log('STDERR: ' + result.stderr, 'feedback');
   })
 }
@@ -113,7 +130,7 @@ export const composeDown = (sse) =>{
 export const composePs = () =>{
   console.log("----------------------step 2");
   return ssh.execCommand(`/snap/bin/docker ps --format '{{json .}}'  `, {  }).then((result) => {
-    console.log(result);
+    // console.log(result);
     return result.stdout.split('\n').map( state=> JSON.parse(state));
   })
 

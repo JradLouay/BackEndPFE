@@ -5,8 +5,7 @@ import YAML from 'yaml';
 
 
 export const create = ({ bodymen: { body } }, res, next) =>{
-    let description =JSON.stringify( YAML.parse(body.description));
-    console.log(YAML.stringify(description));
+    const description = JSON.stringify( YAML.parse(body.description));
     let mod = {
       ... body,
       description

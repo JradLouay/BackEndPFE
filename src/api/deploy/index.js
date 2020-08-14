@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { create, index, show, test, update, destroy, deploy, rollback, stats } from './controller'
+import { create, index, show, test, update, destroy, deploy, rollback, stats, logs } from './controller'
 import { token } from '../../services/passport'
 // import { schema } from './model'
 export Deploy, { schema } from './model'
@@ -90,6 +90,16 @@ rollback)
  */
 router.get('/stats/:id',
   stats)
+
+/**
+ * @api {get} /deploys/logs/:id/:containerId Get containers logs
+ * @apiName Info
+ * @apiGroup Info
+ * @apiSuccess (Success 204) 204 No Content.
+ * @apiError 404 Deploy not found.
+ */
+router.get('/logs/:id/:containerId',
+  logs)
 
 /**
  * @api {delete} /deploys/stop/:id Stop services deploy

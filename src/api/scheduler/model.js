@@ -45,6 +45,7 @@ schedulerSchema.methods = {
       version: this.version,
       type: this.type,
       status: this.status,
+      feedBack: this.feedBack,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }

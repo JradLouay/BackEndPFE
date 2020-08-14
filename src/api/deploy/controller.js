@@ -9,7 +9,8 @@ composeUp,
 composeDown, 
 composeUpdate, 
 composePs, 
-envFileRollback } from './steps';
+envFileRollback,
+containerLogs } from './steps';
 import Activity from '../../services/logger/Activity'
 import SSE from 'express-sse';
 import NodeSSH from 'node-ssh';
@@ -91,6 +92,7 @@ export const deploy = (req, res, next) => {
       .performedOn(client)
       .causedBy(req.user ? req.user : undefined)
       .log('Deploy ')
+      return client
     })
     .then(success(res))
     .catch(next)
@@ -216,6 +218,27 @@ export const stats = (req, res, next) =>
     })
     .catch(next)
 }
+
+export const logs = (req, res, next) =>
+{
+  console.log("container :", req.params.containerId);
+  Client.findById(req.params.id)
+    .then(notFound(res))
+    .then((client) => {
+      if (client.status == "Deployed" ) {
+        // config within client spec
+        connect(
+          client.host,
+          client.userName,
+          client.password
+        ).then(() => {
+          return containerLogs(req.params.containerId)
+        })
+        .then(success(res))
+      } else return null;
+    })
+    .catch(next)
+}
 export const destroy = (req, res, next) =>
 {
   sse.init(req, res)
@@ -242,7 +265,7 @@ export const destroy = (req, res, next) =>
     .then(success(res))
     .then(async (client)=>{
       await new Activity()
-      .performedOn(client)
+      // .performedOn(client)
       .causedBy(req.user ? req.user : undefined)
       .log('Deploy ')
     })
