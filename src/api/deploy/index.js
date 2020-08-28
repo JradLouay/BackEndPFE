@@ -22,7 +22,7 @@ router.post('/',
   create)
 
 /**
- * @api {post} /deploys test client info
+ * @api {post} /deploys/test test client info
  * @apiName CreateDeploy
  * @apiGroup Deploy
  * @apiParam clientId Deploy's clientId.
@@ -82,7 +82,7 @@ router.get('/rollback/:id',
 rollback)
 
 /**
- * @api {delete} /deploys/stop/:id Get service Info
+ * @api {delete} /deploys/stats/:id Get services Info
  * @apiName Info
  * @apiGroup Info
  * @apiSuccess (Success 204) 204 No Content.

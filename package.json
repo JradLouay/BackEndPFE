@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon .",
-    "test": "jest",
+    "test": "jest src/api/deploy/index.test.js",
     "coverage": "npm test -- --coverage",
     "postcoverage": "opn coverage/lcov-report/index.html",
     "dev": "nodemon -i \"*.test.js\" .",
@@ -34,6 +34,7 @@
     "eslint-plugin-promise": "^4.2.0",
     "eslint-plugin-standard": "^4.0.1",
     "jest-cli": "^25.1.0",
+    "mongodb-memory-server": "^6.6.3",
     "nock": "^12.0.2",
     "nodemon": "^2.0.2",
     "open-cli": "^6.0.0",

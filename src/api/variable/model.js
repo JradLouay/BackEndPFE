@@ -17,7 +17,7 @@ const variableSchema = new Schema({
 
 variableSchema.methods = {
   view (full) {
-    const view = {
+    const view = { 
       // simple view
       id: this.id,
       key: this.key,

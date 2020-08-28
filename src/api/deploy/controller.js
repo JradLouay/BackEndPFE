@@ -200,7 +200,8 @@ export const rollback = (req, res, next) =>{
 }
 
 export const stats = (req, res, next) =>
-{
+{ 
+  console.log('start stats process');
   Client.findById(req.params.id)
     .then(notFound(res))
     .then((client) => {
@@ -214,7 +215,10 @@ export const stats = (req, res, next) =>
           return composePs()
         })
         .then(success(res))
-      } else return null;
+      } else{
+        res.status(404).end()
+         return null
+        }
     })
     .catch(next)
 }

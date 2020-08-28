@@ -3,7 +3,7 @@ import MongodbMemoryServer from 'mongodb-memory-server'
 import mongoose from '../src/services/mongoose'
 
 EventEmitter.defaultMaxListeners = Infinity
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000
 
 global.Array = Array
 global.Date = Date

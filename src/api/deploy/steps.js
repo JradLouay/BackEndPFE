@@ -130,10 +130,9 @@ export const composeDown = (sse) =>{
 export const composePs = () =>{
   console.log("----------------------step 2");
   return ssh.execCommand(`/snap/bin/docker ps --format '{{json .}}'  `, {  }).then((result) => {
-    // console.log(result);
+    console.log("result mt3 stats", result);
     return result.stdout.split('\n').map( state=> JSON.parse(state));
   })
-
 }
 
 

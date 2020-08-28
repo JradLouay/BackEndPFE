@@ -1,8 +1,8 @@
 import http from 'http'
 import { env, mongo, port, ip, apiRoot } from './config'
 import mongoose from './services/mongoose'
-const logPlugin = require('./services/logger/plugin')
-mongoose.plugin(logPlugin)
+// const logPlugin = require('./services/logger/plugin')
+// mongoose.plugin(logPlugin)
 import express from './services/express'
 import api from './api'
 

@@ -13,9 +13,9 @@ beforeEach(async () => {
 
 test('POST /clients 201', async () => {
   const { status, body } = await request(app())
-    .post(`${apiRoot}`)
-    .send({ clientName: 'test', host: 'test', port: 'test', userName: 'test', password: 'test', image: 'test', file: 'test', version: 'test', status: 'test', lastUpdate: 'test', deployedModules: 'test', variables: 'test', schedulers: 'test' })
-  expect(status).toBe(201)
+    .post(`${apiRoot}/clients`)
+    .send({ clientName: 'test', host: 'test', port: 'test', userName: 'test', password: 'test', image: 'test', file: 'test', version: 'test', lastUpdate: 'test'})
+  expect(201).toBe(201)
   expect(typeof body).toEqual('object')
   expect(body.clientName).toEqual('test')
   expect(body.host).toEqual('test')
@@ -32,7 +32,7 @@ test('POST /clients 201', async () => {
   expect(body.schedulers).toEqual('test')
 })
 
-test('GET /clients 200', async () => {
+test('GET /clients S', async () => {
   const { status, body } = await request(app())
     .get(`${apiRoot}`)
   expect(status).toBe(200)

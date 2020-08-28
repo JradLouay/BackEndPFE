@@ -3,7 +3,7 @@ import { Client } from '.'
 let client
 
 beforeEach(async () => {
-  client = await Client.create({ clientName: 'test', host: 'test', port: 'test', userName: 'test', password: 'test', image: 'test', file: 'test', version: 'test', status: 'test', lastUpdate: 'test', deployedModules: 'test', variables: 'test', schedulers: 'test' })
+  client = await Client.create({ clientName: 'test', host: 'test', port: 'test', userName: 'test', password: 'test', image: 'test', file: 'test', version: 'test', lastUpdate: 'test'})
 })
 
 describe('view', () => {

@@ -16,7 +16,6 @@ export const create = ({ bodymen: { body }, user, files }, res, next) =>
       if (files.file) {
         body.file = files.file[0].path
       }
-      console.log("body :", body);
       Client.create(body)
       .then((client) => client.view(true))
       .then(success(res, 201))
@@ -24,7 +23,7 @@ export const create = ({ bodymen: { body }, user, files }, res, next) =>
         await new Activity()
         // .performedOn(someContentDocument)
         .causedBy(user)
-        .log('Add Client ')
+        .log('Add Client')
       })
       .catch(next)
     }
@@ -82,13 +81,13 @@ export const destroy = ({ params }, res, next) =>
         if(client.file){
           fs.unlink(client.file, (err)=>{
           // if (err) throw err;
-          console.log(client.file,' was deleted');
+          // console.log(client.file,' was deleted');
           });
        }
         if(client.image){
           fs.unlink(client.image, (err)=>{
           // if (err) throw err;
-          console.log(client.image,' was deleted');
+          // console.log(client.image,' was deleted');
           });
        }
        //delete variables delete schedulers  

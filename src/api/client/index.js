@@ -62,8 +62,8 @@ const { clientName, host, port, userName, password, image , file, version, statu
  */
 router.post('/',
   upload.fields([{name: 'image'},{name: 'file'}]),
-  body({ clientName, host, port, userName, password, image, file, version, status, lastUpdate }),
-  token({ required: true, roles: ['admin'] }),
+  body({ clientName, host, port, userName, password, image, fileName, file, version, status, lastUpdate }),
+  // token({ required: true, roles: ['admin'] }),
   create)
 
 /**

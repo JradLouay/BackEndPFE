@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import mongoose, { Schema } from 'mongoose'
 const logPlugin = require('../../services/logger/plugin')
 
@@ -37,7 +38,7 @@ const clientSchema = new Schema({
     default : 'Not Deployed' // Deployed || Not Deployed
   },
   lastUpdate: {
-    type: String
+    type: String 
   },
   // deployedModules: [
   //   { type: Schema.Types.ObjectId, ref :'Module' } 
@@ -54,6 +55,15 @@ const clientSchema = new Schema({
     virtuals: true,
     transform: (obj, ret) => { delete ret._id }
   }
+})
+
+
+clientSchema.path('fileName').set(function (fileName) {
+  if (!this.image || this.image.indexOf('https://gravatar.com') === 0) {
+    const hash = crypto.createHash('md5').update(fileName).digest('hex')
+    this.image = `https://gravatar.com/avatar/${hash}?d=identicon`
+  }
+  return fileName
 })
 
 clientSchema.methods = {

@@ -56,6 +56,8 @@ userSchema.path('email').set(function (email) {
   return email
 })
 
+
+
 userSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next()
 

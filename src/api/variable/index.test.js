@@ -1,20 +1,24 @@
 import request from 'supertest'
 import { apiRoot } from '../../config'
 import express from '../../services/express'
+import { Client } from '../client'
 import routes, { Variable } from '.'
 
 const app = () => express(apiRoot, routes)
 
 let variable
-
+let client
 beforeEach(async () => {
   variable = await Variable.create({})
+  client = await Client.create({})
 })
+
 
 test('POST /variables 201', async () => {
   const { status, body } = await request(app())
-    .post(`${apiRoot}`)
+    .post(`${apiRoot}/variables/${client.id}`)
     .send({ key: 'test', value: 'test' })
+    console.log(' status-----------------------------', status);
   expect(status).toBe(201)
   expect(typeof body).toEqual('object')
   expect(body.key).toEqual('test')
