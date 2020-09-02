@@ -14,7 +14,8 @@ beforeEach(async () => {
 test('POST /clients 201', async () => {
   const { status, body } = await request(app())
     .post(`${apiRoot}/clients`)
-    .send({ clientName: 'test', host: 'test', port: 'test', userName: 'test', password: 'test', image: 'test', file: 'test', version: 'test', lastUpdate: 'test'})
+    .send({ clientName: 'test', host: 'test', port: 'test', userName: 'test',
+     password: 'test', version: 'test', status: 'test'})
   expect(201).toBe(201)
   expect(typeof body).toEqual('object')
   expect(body.clientName).toEqual('test')
@@ -22,14 +23,8 @@ test('POST /clients 201', async () => {
   expect(body.port).toEqual('test')
   expect(body.userName).toEqual('test')
   expect(body.password).toEqual('test')
-  expect(body.image).toEqual('test')
-  expect(body.file).toEqual('test')
   expect(body.version).toEqual('test')
   expect(body.status).toEqual('test')
-  expect(body.lastUpdate).toEqual('test')
-  expect(body.deployedModules).toEqual('test')
-  expect(body.variables).toEqual('test')
-  expect(body.schedulers).toEqual('test')
 })
 
 test('GET /clients S', async () => {
@@ -56,7 +51,7 @@ test('GET /clients/:id 404', async () => {
 test('PUT /clients/:id 200', async () => {
   const { status, body } = await request(app())
     .put(`${apiRoot}/${client.id}`)
-    .send({ clientName: 'test', host: 'test', port: 'test', userName: 'test', password: 'test', image: 'test', file: 'test', version: 'test', status: 'test', lastUpdate: 'test', deployedModules: 'test', variables: 'test', schedulers: 'test' })
+    .send({ clientName: 'test', host: 'test', port: 'test', userName: 'test', password: 'test', image: 'test', file: 'test', version: 'test', status: 'test', lastUpdate: 'test' })
   expect(status).toBe(200)
   expect(typeof body).toEqual('object')
   expect(body.id).toEqual(client.id)
@@ -70,9 +65,6 @@ test('PUT /clients/:id 200', async () => {
   expect(body.version).toEqual('test')
   expect(body.status).toEqual('test')
   expect(body.lastUpdate).toEqual('test')
-  expect(body.deployedModules).toEqual('test')
-  expect(body.variables).toEqual('test')
-  expect(body.schedulers).toEqual('test')
 })
 
 test('PUT /clients/:id 404', async () => {
