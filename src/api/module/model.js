@@ -23,14 +23,15 @@ const moduleSchema = new Schema({
 })
 
 moduleSchema.methods = {
-  view (full) {
+  view (full) { 
     const view = {
       // simple view
       id: this.id,
       moduleName: this.moduleName,
       version: this.version,
       lastUpdate: this.lastUpdate,
-      description: YAML.stringify(JSON.parse(this.description)),
+      // description: YAML.stringify(JSON.parse(this.description)),
+      description: this.description,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }
